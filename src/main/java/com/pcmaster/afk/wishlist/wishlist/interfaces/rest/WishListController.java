@@ -1,6 +1,8 @@
 package com.pcmaster.afk.wishlist.wishlist.interfaces.rest;
 
 import com.pcmaster.afk.wishlist.wishlist.domain.model.queries.GetWishListByIdQuery;
+import com.pcmaster.afk.wishlist.wishlist.domain.model.queries.GetWishListByUserIdQuery;
+import com.pcmaster.afk.wishlist.wishlist.domain.model.valueobjects.UserId;
 import com.pcmaster.afk.wishlist.wishlist.domain.services.WishListCommandService;
 import com.pcmaster.afk.wishlist.wishlist.domain.services.WishListQueryService;
 import com.pcmaster.afk.wishlist.wishlist.interfaces.rest.resources.CreateWishListResource;
@@ -12,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
@@ -44,5 +49,24 @@ public class WishListController {
 
         var wishResource = WishListResourceFromEntityAssembler.toResourceFromEntity(optionalWish.get());
         return new ResponseEntity<>(wishResource, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<WishListResource>> getByUserId(@RequestParam(name = "userId") Long uId){
+
+        if(uId == null){
+            return ResponseEntity.badRequest().build();
+        }
+
+        UserId userId = new UserId(uId);
+
+        var getWishListByUserIdQuery = new GetWishListByUserIdQuery(userId);
+        var wishlist = this.wishListQueryService.handle(getWishListByUserIdQuery);
+
+        var wishlistResource = wishlist.stream()
+                .map(WishListResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(wishlistResource);
     }
 }
