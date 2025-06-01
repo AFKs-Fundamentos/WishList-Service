@@ -1,4 +1,4 @@
 package com.pcmaster.afk.wishlist.shared.interfaces.rest.resources;
 
-public record MessageResource() {
+public record MessageResource(String message) {
 }

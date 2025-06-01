@@ -1,4 +1,4 @@
-package com.pcmaster.afk.shared.infrastructure.documentation.openapi.configuration;
+package com.pcmaster.afk.wishlist.shared.infrastructure.documentation.openapi.configuration;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -17,7 +17,7 @@ public class OpenApiConfiguration {
         openApi
                 .info(new Info()
                         .title("PCMaster service API")
-                        .description("Ratings PCMaster Service.")
+                        .description("Wishlist PCMaster Service.")
                         .version("v1.0.0")
                         .license(new License().name("Apache 2.0")
                                 .url("https://springdoc.org")))
