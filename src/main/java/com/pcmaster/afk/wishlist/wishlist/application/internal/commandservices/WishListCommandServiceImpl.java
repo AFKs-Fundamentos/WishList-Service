@@ -2,6 +2,9 @@ package com.pcmaster.afk.wishlist.wishlist.application.internal.commandservices;
 
 import com.pcmaster.afk.wishlist.wishlist.domain.model.aggregates.WishList;
 import com.pcmaster.afk.wishlist.wishlist.domain.model.commands.CreateWishListCommand;
+import com.pcmaster.afk.wishlist.wishlist.domain.model.commands.DeleteProductOfWishListCommand;
+import com.pcmaster.afk.wishlist.wishlist.domain.model.valueobjects.ProductId;
+import com.pcmaster.afk.wishlist.wishlist.domain.model.valueobjects.UserId;
 import com.pcmaster.afk.wishlist.wishlist.domain.services.WishListCommandService;
 import com.pcmaster.afk.wishlist.wishlist.infrastructure.persistence.jpa.repositories.WishListRepository;
 import org.springframework.stereotype.Service;
@@ -27,4 +30,18 @@ public class WishListCommandServiceImpl implements WishListCommandService {
 
         return wishList.getId();
     }
+
+    @Override
+    public void handle(DeleteProductOfWishListCommand command) {
+        var userId = new UserId(command.userId());
+        var productId = new ProductId(command.productId());
+
+        try {
+            this.wishListRepository.deleteByUserIdAndProductId(userId, productId);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error while deleting Product of Wishlist: " + e.getMessage());
+        }
+    }
+
+
 }
