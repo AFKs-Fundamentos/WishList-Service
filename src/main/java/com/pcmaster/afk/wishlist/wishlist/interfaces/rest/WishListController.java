@@ -1,5 +1,6 @@
 package com.pcmaster.afk.wishlist.wishlist.interfaces.rest;
 
+import com.pcmaster.afk.wishlist.wishlist.domain.model.commands.DeleteProductOfWishListCommand;
 import com.pcmaster.afk.wishlist.wishlist.domain.model.queries.GetWishListByIdQuery;
 import com.pcmaster.afk.wishlist.wishlist.domain.model.queries.GetWishListByUserIdQuery;
 import com.pcmaster.afk.wishlist.wishlist.domain.model.valueobjects.UserId;
@@ -68,5 +69,12 @@ public class WishListController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(wishlistResource);
+    }
+
+    @DeleteMapping("/{userId}/{productId}")
+    public ResponseEntity<?> deleteProductOfWishList(@PathVariable Long userId, Long productId){
+        var deleteProduct = new DeleteProductOfWishListCommand(userId, productId);
+        this.wishListCommandService.handle(deleteProduct);
+        return ResponseEntity.ok().build();
     }
 }
