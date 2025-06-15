@@ -10,6 +10,10 @@ import com.pcmaster.afk.wishlist.wishlist.interfaces.rest.resources.CreateWishLi
 import com.pcmaster.afk.wishlist.wishlist.interfaces.rest.resources.WishListResource;
 import com.pcmaster.afk.wishlist.wishlist.interfaces.rest.transform.CreateWishListCommandFromResourceAssembler;
 import com.pcmaster.afk.wishlist.wishlist.interfaces.rest.transform.WishListResourceFromEntityAssembler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +37,29 @@ public class WishListController {
         this.wishListCommandService = wishListCommandService;
     }
 
+    @Operation(
+            summary = "Add a new WishList",
+            description = "Add a new product for user wishlist",
+            operationId = "createWishList",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CreateWishListResource.class)
+                            )
+                    ),
+                    @ApiResponse (
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content = @Content (
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RuntimeException.class)
+                            )
+                    )
+            }
+    )
     @PostMapping
     public ResponseEntity<WishListResource> createWishList(@RequestBody CreateWishListResource resource){
 
@@ -52,6 +79,21 @@ public class WishListController {
         return new ResponseEntity<>(wishResource, HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary = "Fetch all wishlist for user",
+            description = "Fetch all product by wishlist of user",
+            operationId = "getWishListByUserId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = WishListResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/user")
     public ResponseEntity<List<WishListResource>> getByUserId(@RequestParam(name = "userId") Long uId){
 
@@ -71,6 +113,21 @@ public class WishListController {
         return ResponseEntity.ok(wishlistResource);
     }
 
+    @Operation(
+            summary = "Delete product of wishlist",
+            description = "Delete a product of wishlist by user",
+            operationId = "deleteProductOfWishList",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful delete",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = WishListResource.class)
+                            )
+                    )
+            }
+    )
     @DeleteMapping("/{userId}/{productId}")
     public ResponseEntity<?> deleteProductOfWishList(@PathVariable Long userId, Long productId){
         var deleteProduct = new DeleteProductOfWishListCommand(userId, productId);
